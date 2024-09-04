@@ -1,4 +1,5 @@
 const DEBUG = true;
+const FONT = "Lemonada";
 
 const MESSAGE = "The biggest changes start with tiny little things.";
 
@@ -62,7 +63,8 @@ function setup() {
   blendMode(DODGE);
   angleMode(DEGREES);
   pixelDensity(1);
-  background(256);
+  background(255);
+
   regen();
   refresh();
 
@@ -323,6 +325,7 @@ function genPal(n) {
 
 function handleText(graphics = null) {
   const gfx = graphics || this; // Use passed buffer or default to the main drawing context (the screen)
+  gfx.textFont(FONT);
   gfx.textSize(126); // Adjust text size as needed
   gfx.textAlign(CENTER, CENTER);
   wrapAndDisplayText(MESSAGE, gfx);
@@ -332,11 +335,11 @@ function wrapAndDisplayText(message, gfx) {
   let textWidthLimit = windowWidth * 0.75;
   let lines = wrapText(message, textWidthLimit, gfx);
 
-  let totalTextHeight = lines.length * gfx.textAscent();
+  let totalTextHeight = lines.length * gfx.textAscent() * 0.6;
   let startY = (windowHeight - totalTextHeight) / 2;
 
   for (let i = 0; i < lines.length; i++) {
-    gfx.text(lines[i], windowWidth / 2, startY + i * gfx.textAscent() * 1.3);
+    gfx.text(lines[i], windowWidth / 2, startY + i * gfx.textAscent() * 0.6);
   }
 }
 
