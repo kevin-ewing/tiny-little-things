@@ -1,4 +1,4 @@
-const DEBUG = true;
+const DEBUG = false;
 
 let myFont;
 const MESSAGE = "The biggest changes start with tiny little things.";
