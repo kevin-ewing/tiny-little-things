@@ -1,6 +1,6 @@
 const DEBUG = true;
-const FONT = "Lemonada";
 
+let myFont;
 const MESSAGE = "The biggest changes start with tiny little things.";
 
 const CANVAS_WIDTH = 1400;
@@ -21,8 +21,12 @@ let stepSize;
 const antPheromoneFactor = 1;
 const enemyPheromoneFactor = 1;
 
-const messagePheromoneFactor = 0.1;
-const pheromoneDecay = 10;
+const messagePheromoneFactor = 0.2;
+const pheromoneDecay = 1;
+
+function preload() {
+  myFont = loadFont("resources/Lemonada.ttf");
+}
 
 function windowResized() {
   refresh();
@@ -95,6 +99,7 @@ function ui() {
   fill(0); // Set text color to white
   textSize(16); // Set text size
   textAlign(RIGHT, TOP); // Align text to the top right corner
+  textFont("Courier New");
   text(
     `Ant Count: ${antsNum}\nAnt Types: ${antTypes}\nLook Ahead (Pixels): ${lookAhead.toFixed(
       4
@@ -106,7 +111,7 @@ function ui() {
   );
 
   fill(0);
-  rect(windowWidth - 100, windowHeight - 10, windowWidth, windowHeight);
+  rect(windowWidth - 120, windowHeight - 10, windowWidth, windowHeight);
   fill(255); // Set text color to white
   textSize(10); // Set text size
   textAlign(RIGHT, TOP); // Align text to the top right corner
@@ -115,9 +120,6 @@ function ui() {
     windowWidth - 10,
     windowHeight - 10
   );
-
-  fill(255, 30);
-  handleText();
 }
 
 function draw() {
@@ -135,6 +137,9 @@ function draw() {
   if (DEBUG) {
     ui(); // Display ui on top of everything
   }
+
+  fill(255, 0, 255, 40);
+  handleText();
 }
 
 class Ant {
@@ -325,7 +330,9 @@ function genPal(n) {
 
 function handleText(graphics = null) {
   const gfx = graphics || this; // Use passed buffer or default to the main drawing context (the screen)
-  gfx.textFont(FONT);
+  textSize(126); // Set text size
+  textAlign(CENTER, CENTER); // Align text to the top right corner
+  gfx.textFont(myFont);
   gfx.textSize(126); // Adjust text size as needed
   gfx.textAlign(CENTER, CENTER);
   wrapAndDisplayText(MESSAGE, gfx);
@@ -335,11 +342,11 @@ function wrapAndDisplayText(message, gfx) {
   let textWidthLimit = windowWidth * 0.75;
   let lines = wrapText(message, textWidthLimit, gfx);
 
-  let totalTextHeight = lines.length * gfx.textAscent() * 0.6;
+  let totalTextHeight = lines.length * gfx.textAscent() * 0.7;
   let startY = (windowHeight - totalTextHeight) / 2;
 
   for (let i = 0; i < lines.length; i++) {
-    gfx.text(lines[i], windowWidth / 2, startY + i * gfx.textAscent() * 0.6);
+    gfx.text(lines[i], windowWidth / 2, startY + i * gfx.textAscent() * 0.7);
   }
 }
 
