@@ -1,4 +1,4 @@
-const DEBUG = false;
+const DEBUG = true;
 
 let myFont;
 const MESSAGE = "The biggest changes start with tiny little things.";
@@ -9,19 +9,19 @@ const CANVAS_HEIGHT = 800;
 let palType;
 let colorPalette;
 let backgroundAlpha = 10;
-let antTypes;
+let antTypes = 2;
 let antsSystems = [];
 let pheromoneArray = [];
 let messageArray = [];
 let antsNum;
-let lookAhead;
+let lookAhead = 7.5;
 let turnAngle;
-let stepSize;
+let stepSize = 1.5;
 
 const antPheromoneFactor = 1;
 const enemyPheromoneFactor = 1;
 
-const messagePheromoneFactor = 0.2;
+const messagePheromoneFactor = 0.4;
 const pheromoneDecay = 1;
 
 function preload() {
@@ -52,10 +52,7 @@ function refresh() {
 }
 
 function regen() {
-  lookAhead = random(2, 30);
   turnAngle = random(20, 40);
-  stepsize = random(0.2, 4);
-  antTypes = floor(random(0, 2)) + 2;
   antsNum = 80000 - 10000 * antTypes;
   colorPalette = genPal(antTypes);
 }
@@ -105,7 +102,7 @@ function ui() {
       4
     )}\nTurn Angle (Degrees): ${turnAngle.toFixed(
       4
-    )}\nStep Size (Pixels): ${stepsize.toFixed(4)}\nPalette Type: ${palType}`,
+    )}\nStep Size (Pixels): ${stepSize.toFixed(4)}\nPalette Type: ${palType}`,
     windowWidth - 10,
     10
   );
@@ -188,8 +185,8 @@ class Ant {
   }
 
   updatePosition() {
-    this.x += cos(this.angle) * stepsize;
-    this.y += sin(this.angle) * stepsize;
+    this.x += cos(this.angle) * stepSize;
+    this.y += sin(this.angle) * stepSize;
     this.x = (this.x + width) % width;
     this.y = (this.y + height) % height;
 
@@ -220,7 +217,6 @@ class System {
 
   updatePheromone() {
     const pheromones = pheromoneArray[this.antIndex];
-    const letterAttracted = this.antIndex == 0;
     const lengthY = pheromones.length;
     const decay = pheromoneDecay; // Cache pheromoneDecay to avoid repeated scope lookups
     let letterQuotient;
@@ -229,18 +225,13 @@ class System {
       const lengthX = row.length;
       for (let j = 0; j < lengthX; j++) {
         const value = row[j];
-        if (letterAttracted) {
-          letterQuotient = messageArray[i][j];
-        } else {
-          letterQuotient = messageArray[i][j] * -1;
-        }
         // Combining the checks for positive and negative values to avoid duplicate code
         row[j] = Math.max(
           -255,
           Math.min(
             (value > 0
               ? Math.max(value - decay, 0)
-              : Math.min(value + decay, 0)) + letterQuotient,
+              : Math.min(value + decay, 0)) - messageArray[i][j],
             255
           )
         );
